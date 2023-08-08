@@ -2,7 +2,12 @@ import React from 'react';
 
 const MaturityDetail = (props) => {
   const currentDate = new Date('2021-08-08'); // August 8, 2021
-  const maturityDate = new Date(props.info.maturity_date);
+  const maturityDateParts = props.info.maturity_date.split('/'); // Split date parts
+  const maturityDate = new Date(
+    maturityDateParts[2],  // Year
+    parseInt(maturityDateParts[0]) - 1, // Month (zero-based)
+    maturityDateParts[1]  // Day
+  );
   const timeDiff = maturityDate.getTime() - currentDate.getTime();
   const daysDiff = timeDiff / (1000 * 3600 * 24);
 
