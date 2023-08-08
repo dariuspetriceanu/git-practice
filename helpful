@@ -24,7 +24,7 @@ const Maturity = () => {
   const currentDate = new Date('2021-08-08'); // August 8, 2021
 
   const filteredMaturity = maturity.filter((mat) => {
-    const maturityDate = new Date(mat.maturityDate); // Assuming 'maturityDate' is the field name in your data
+    const maturityDate = new Date(mat.maturityDate); // Parse the string into a Date object
     const timeDiff = maturityDate.getTime() - currentDate.getTime();
     const daysDiff = timeDiff / (1000 * 3600 * 24);
     return daysDiff <= 5 && daysDiff >= 0;
