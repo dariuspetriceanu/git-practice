@@ -25,16 +25,17 @@ const Maturity = () => {
       return false; // Skip items without maturityDate
     }
 
-    const maturityDateComponents = mat.maturityDate.split('-');
-    const maturityYear = parseInt(maturityDateComponents[0], 10);
-    const maturityMonth = parseInt(maturityDateComponents[1], 10) - 1;
-    const maturityDay = parseInt(maturityDateComponents[2], 10);
-    const maturityDate = new Date(maturityYear, maturityMonth, maturityDay);
-    
+    const maturityDate = new Date(mat.maturityDate); // Parse the string to Date
+    console.log('Maturity Date:', maturityDate);
+
     const timeDiff = maturityDate.getTime() - currentDate.getTime();
     const daysDiff = timeDiff / (1000 * 3600 * 24);
+    console.log('Days Diff:', daysDiff);
+
     return daysDiff <= 5 && daysDiff >= 0;
   });
+
+  console.log('Filtered Maturity:', filteredMaturity);
 
   return (
     <Table striped bordered hover>
