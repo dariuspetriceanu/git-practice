@@ -2,31 +2,49 @@ import React from 'react';
 
 const MaturityDetail = (props) => {
   const currentDate = new Date('2021-08-08'); // August 8, 2021
-  const maturityDateParts = props.info.maturity_date.split('/'); // Split date parts
-  const maturityDate = new Date(
-    maturityDateParts[2],  // Year
-    parseInt(maturityDateParts[0]) - 1, // Month (zero-based)
-    maturityDateParts[1]  // Day
-  );
-  const timeDiff = maturityDate.getTime() - currentDate.getTime();
-  const daysDiff = timeDiff / (1000 * 3600 * 24);
 
-  // Check if maturity date is due in 5 days or less
-  if (daysDiff <= 5 && daysDiff >= 0) {
-    return (
-      <tr>
-        <td>{props.info.id}</td>
-        <td>{props.info.status}</td>
-        <td>{props.info.trade_type}</td>
-        <td>{props.info.trade_date}</td>
-        <td>{props.info.maturity_date}</td>
-        <td>{props.info.trade_settlement_date}</td>
-      </tr>
+  // Filter data for dates due in 5 days or less
+  const filteredData = props.data.filter(item => {
+    const maturityDateParts = item.maturity_date.split('/');
+    const maturityDate = new Date(
+      maturityDateParts[2],  // Year
+      parseInt(maturityDateParts[0]) - 1, // Month (zero-based)
+      maturityDateParts[1]  // Day
     );
-  } else {
-    // Return null if maturity date is not due in 5 days or less
-    return null;
-  }
+    const timeDiff = maturityDate.getTime() - currentDate.getTime();
+    const daysDiff = timeDiff / (1000 * 3600 * 24);
+    return daysDiff <= 5 && daysDiff >= 0;
+  });
+
+  return (
+    <div>
+      <h1>Dates Due in 5 Days or Less</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Status</th>
+            <th>Trade Type</th>
+            <th>Trade Date</th>
+            <th>Maturity Date</th>
+            <th>Trade Settlement Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredData.map((item, index) => (
+            <tr key={index}>
+              <td>{item.id}</td>
+              <td>{item.status}</td>
+              <td>{item.trade_type}</td>
+              <td>{item.trade_date}</td>
+              <td>{item.maturity_date}</td>
+              <td>{item.trade_settlement_date}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 };
 
 export default MaturityDetail;
