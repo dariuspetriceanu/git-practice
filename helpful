@@ -1,0 +1,54 @@
+import React, { useEffect, useState } from 'react';
+import MaturityDetail from './MaturityDetail';
+import { getAllMaturity } from '../services/bonds-service';
+import Table from 'react-bootstrap/esm/Table';
+
+const Maturity = () => {
+  const [maturity, setMaturity] = useState([]);
+
+  useEffect(() => {
+    getMaturityFromAPI();
+  }, []);
+
+  const getMaturityFromAPI = () => {
+    getAllMaturity()
+      .then((res) => {
+        setMaturity(res.data);
+      })
+      .catch((err) => {
+        setMaturity([]);
+        console.log(err);
+      });
+  };
+
+  const currentDate = new Date('2021-08-08'); // August 8, 2021
+
+  const filteredMaturity = maturity.filter((mat) => {
+    const maturityDate = new Date(mat.maturityDate); // Assuming 'maturityDate' is the field name in your data
+    const timeDiff = maturityDate.getTime() - currentDate.getTime();
+    const daysDiff = timeDiff / (1000 * 3600 * 24);
+    return daysDiff <= 5 && daysDiff >= 0;
+  });
+
+  return (
+    <Table striped bordered hover>
+      <thead>
+        <tr>
+          <th>id</th>
+          <th>status</th>
+          <th>type</th>
+          <th>trade date</th>
+          <th>maturity date</th>
+          <th>trade settlement date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {filteredMaturity.map((mat) => (
+          <MaturityDetail info={mat} key={mat.id.toString()} />
+        ))}
+      </tbody>
+    </Table>
+  );
+};
+
+export default Maturity;
