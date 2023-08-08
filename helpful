@@ -25,11 +25,13 @@ const Maturity = () => {
       return false; // Skip items without maturityDate
     }
 
-    const maturityDate = new Date(mat.maturityDate); // Parse the string to Date
-    console.log('Maturity Date:', maturityDate);
-
+    const [day, month, year] = mat.maturityDate.split('-').map(Number);
+    const maturityDate = new Date(year, month - 1, day); // Adjust month to 0-based index
     const timeDiff = maturityDate.getTime() - currentDate.getTime();
     const daysDiff = timeDiff / (1000 * 3600 * 24);
+
+    console.log('Maturity Date:', mat.maturityDate);
+    console.log('Parsed Date:', maturityDate);
     console.log('Days Diff:', daysDiff);
 
     return daysDiff <= 5 && daysDiff >= 0;
