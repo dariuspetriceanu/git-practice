@@ -24,7 +24,12 @@ const Maturity = () => {
   const currentDate = new Date('2021-08-08'); // August 8, 2021
 
   const filteredMaturity = maturity.filter((mat) => {
-    const maturityDate = new Date(mat.maturityDate); // Parse the string into a Date object
+    const maturityDateComponents = mat.maturityDate.split('-'); // Assuming 'maturityDate' is in 'YYYY-MM-DD' format
+    const maturityYear = parseInt(maturityDateComponents[0], 10);
+    const maturityMonth = parseInt(maturityDateComponents[1], 10) - 1; // Month is zero-based
+    const maturityDay = parseInt(maturityDateComponents[2], 10);
+    const maturityDate = new Date(maturityYear, maturityMonth, maturityDay);
+    
     const timeDiff = maturityDate.getTime() - currentDate.getTime();
     const daysDiff = timeDiff / (1000 * 3600 * 24);
     return daysDiff <= 5 && daysDiff >= 0;
