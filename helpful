@@ -1,4 +1,8 @@
-// ... (import statements)
+import React, { useEffect, useState } from 'react';
+import MaturityDetail from './MaturityDetail';
+import { getAllMaturity } from '../services/bonds-service';
+import { parse } from 'date-fns'; // Import the parse function
+import Table from 'react-bootstrap/esm/Table';
 
 const Maturity = () => {
   const [maturity, setMaturity] = useState([]);
@@ -25,8 +29,10 @@ const Maturity = () => {
       return false; // Skip items without maturityDate
     }
 
-    const [day, month, year] = mat.maturityDate.split('-').map(Number);
-    const maturityDate = new Date(year, month - 1, day); // Adjust month to 0-based index
+    // Split the date parts and parse them into a Date object
+    const [month, day, year] = mat.maturityDate.split('/').map(Number);
+    const maturityDate = parse(`${year}-${month}-${day}`, 'yyyy-MM-dd', new Date());
+
     const timeDiff = maturityDate.getTime() - currentDate.getTime();
     const daysDiff = timeDiff / (1000 * 3600 * 24);
 
