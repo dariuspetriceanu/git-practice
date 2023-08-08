@@ -1,69 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import MaturityDetail from './MaturityDetail';
-import { getAllMaturity } from '../services/bonds-service';
-import { parse } from 'date-fns'; // Import the parse function
-import Table from 'react-bootstrap/esm/Table';
+import React from 'react';
 
-const Maturity = () => {
-  const [maturity, setMaturity] = useState([]);
-
-  useEffect(() => {
-    getMaturityFromAPI();
-  }, []);
-
-  const getMaturityFromAPI = () => {
-    getAllMaturity()
-      .then((res) => {
-        setMaturity(res.data);
-      })
-      .catch((err) => {
-        setMaturity([]);
-        console.log(err);
-      });
-  };
-
+const MaturityDetail = (props) => {
   const currentDate = new Date('2021-08-08'); // August 8, 2021
+  const maturityDate = new Date(props.info.maturity_date);
+  const timeDiff = maturityDate.getTime() - currentDate.getTime();
+  const daysDiff = timeDiff / (1000 * 3600 * 24);
 
-  const filteredMaturity = maturity.filter((mat) => {
-    if (!mat.maturityDate) {
-      return false; // Skip items without maturityDate
-    }
-
-    // Split the date parts and parse them into a Date object
-    const [month, day, year] = mat.maturityDate.split('/').map(Number);
-    const maturityDate = parse(`${year}-${month}-${day}`, 'yyyy-MM-dd', new Date());
-
-    const timeDiff = maturityDate.getTime() - currentDate.getTime();
-    const daysDiff = timeDiff / (1000 * 3600 * 24);
-
-    console.log('Maturity Date:', mat.maturityDate);
-    console.log('Parsed Date:', maturityDate);
-    console.log('Days Diff:', daysDiff);
-
-    return daysDiff <= 5 && daysDiff >= 0;
-  });
-
-  console.log('Filtered Maturity:', filteredMaturity);
-
-  return (
-    <Table striped bordered hover>
-      <thead>
-        <tr>
-          <th>id</th>
-          <th>status</th>
-          <th>type</th>
-          <th>trade date</th>
-          <th>maturity date</th>
-          <th>trade settlement date</th>
-        </tr>
-      </thead>
-      <tbody>
-        {filteredMaturity.map((mat) => (
-          <MaturityDetail info={mat} key={mat.id.toString()} />
-        ))}
-      </tbody>
-    </Table>
-  );
+  // Check if maturity date is due in 5 days or less
+  if (daysDiff <= 5 && daysDiff >= 0) {
+    return (
+      <tr>
+        <td>{props.info.id}</td>
+        <td>{props.info.status}</td>
+        <td>{props.info.trade_type}</td>
+        <td>{props.info.trade_date}</td>
+        <td>{props.info.maturity_date}</td>
+        <td>{props.info.trade_settlement_date}</td>
+      </tr>
+    );
+  } else {
+    // Return null if maturity date is not due in 5 days or less
+    return null;
+  }
 };
 
-export default Maturity;
+export default MaturityDetail;
